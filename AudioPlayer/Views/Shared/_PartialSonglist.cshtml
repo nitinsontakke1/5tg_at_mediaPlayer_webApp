@@ -1,0 +1,63 @@
+﻿@model IQueryable<AudioPlayer.Models.ViewModel.AudiolistModel>
+
+@*@model IEnumerable<AudioPlayer.EntityModel.Playlist1>*@
+
+@{
+    Layout = null;
+    var countdata = Model.Count();
+
+}
+
+@if (Model.Count() <= 0)
+{
+    <li> No Records Found . Please upload new mp3 file</li>
+}
+else
+{
+    foreach (var item in Model.ToList())
+    {
+        <li class="custom-list--item list-group-item song" url="@item.FilePath"
+            onclick="GetSongsDetails('@item.CartId','@item.PlaylistName','@item.SongName','@item.FileSize','@item.Filetype','@item.Command','@item.Cmd_Parameter')" >
+            <div class="text-dark custom-card--inline amplitude-song-container amplitude-play-pause">
+                <div class="custom-card--inline-img">
+                    <img src="~/Content/assets/images/cover/small/1.jpg" alt="" class="card-img--radius-sm" />
+                </div>
+                @if (!string.IsNullOrEmpty(item.FilePath))
+                {
+
+                    <div class="custom-card--inline-desc">
+                        <p class="text-truncate mb-0" id="CartId">@item.CartId</p>
+                    </div>
+
+                    <div class="custom-card--inline-desc">
+
+                        <p class="text-truncate mb-0" onclick="PlaySong()" id="Playlist_songname">@item.SongName</p>
+
+                        <p class="text-truncate mb-0" id="playlistname" style="display:none;">@item.PlaylistName</p>
+
+                    </div>
+
+                    <div class="custom-card--inline-desc">
+                        <p class="text-truncate mb-0" id="playlistfilesize">@item.FileSize</p>
+                    </div>
+
+                    <div class="custom-card--inline-desc">
+                        <p class="text-truncate mb-0" id="playlistfiletype">@item.Filetype</p>
+                    </div>
+                }
+
+
+                <div class="custom-card--inline-desc" >
+                    <p class="text-truncate mb-0" id="playlistcommand" >@item.Command</p>
+
+                </div>
+                <div class="custom-card--inline-desc">
+                    <p class="text-truncate mb-0"  id="playlistcmd_parameter">@item.Cmd_Parameter</p>
+
+                </div>
+            </div>
+        </li>
+
+    }
+}
+

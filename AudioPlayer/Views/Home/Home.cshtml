@@ -1,0 +1,974 @@
+﻿@model IEnumerable<AudioPlayer.EntityModel.Audio>
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="https://audiotrimmer.com/css/trim-min-0.css" rel="stylesheet">
+
+<link href="https://audiotrimmer.com/jquery-ui-1.11.4.custom/jquery-ui.min2.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+
+<link href="~/Content/assets/css/scheduler.css" rel="stylesheet" />
+
+<div class="main-container" id="appRoute">
+    <div class="row">
+        <div class="section col-xl-5 col-lg-6">
+
+            <div class="heading">
+                <div class="d-flex flex-wrap align-items-end">
+                    <div class="flex-grow-1">
+                        @*<h4 id="currentplaylistname"></h4>*@
+                        <h4> All Playlist</h4>
+                        <p>Listen Playlist</p>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-pill btn-air btn-primary">View All</a>
+                </div>
+                <hr />
+            </div>
+
+
+            <div class="input-group">
+                <select class="custom-select" id="ddlSelectPlaylist">
+                </select>
+
+            </div>
+
+
+            <div class="tab-content" id="songsListContent">
+
+                <div class="tab-pane fade show active" id="recent" role="tabpanel" aria-labelledby="recent-tab">
+
+                    <ul class="list-group list-group-flush" id="UlSongs_1">
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="section col-xl-5 col-lg-6">
+            <div class="heading">
+                <div class="d-flex flex-wrap align-items-end">
+                    <div class="flex-grow-1"><h4>Song Detail</h4></div>
+                </div>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="mb-3">
+                        <b id="playlist_CartId"></b>
+                    </div>
+                    <div class="mb-3">
+                        <b id="playlist_songname"></b>
+                    </div>
+
+                    <div class="mb-3">
+                        <b id="playlist_filesize"></b>
+                    </div>
+                    <div class="mb-3">
+                        <b id="playlist_filetype"></b>
+                    </div>
+                    <div class="mb-3">
+                        <b id="playlist_command"></b>
+                    </div>
+                    <div class="mb-3">
+                        <b id="playlist_cmd_Parameter"></b>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="section col-xl-12 col-lg-12">
+            <div class="heading">
+                <div class=" d-flex flex-wrap align-items-end">
+                    <div class="flex-grow-1">
+                        <h4>All Songs</h4>
+                        <p>Listen free music</p>
+                    </div>
+                    <a href="songs.html" class="btn btn-sm btn-pill btn-air btn-primary">View All</a>
+                </div>
+            </div>
+            <div class="tab-content" id="songsListContent">
+                <div class="tab-pane fade show active " id="recent" role="tabpanel" aria-labelledby="recent-tab">
+                    <table class="table table-striped">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">AirTime</th>
+                                <th scope="col">Cart Id </th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Chain</th>
+                                <th scope="col"></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model.Count() <= 0)
+                            {
+                                <tr> No Records Found . Please upload new mp3 file</tr>
+                            }
+                            else
+                            {
+                                int a = 0;
+
+                                foreach (var item in Model)
+                                {
+                                    <input type="hidden" id="SongId" Value="@item.ID" />
+
+                                    <tr url="@item.FilePath" class="song" id="Song">
+                                        <td onclick="GetTrimAudio('@item.UID','@item.Title','@item.Duration','@item.FilePath')">
+                                            <img src="/Content/assets/images/cover/small/small.jpg" alt="" class="card-img--radius-sm" style="max-width: 20%;">
+                                        </td>
+                                        <th id="AirTime@(a)"></th>
+                                        <td>@item.UID</td>
+                                        <td>@item.Filename</td>
+                                        <td id="songduration@(a)">@item.Duration</td>
+                                        <td>
+                                            <input type="checkbox" value="">
+
+                                        </td>
+                                        <td>
+                                            <ul class="custom-card--labels d-flex ml-auto">
+                                                <li class="dropleft">
+                                                    <a href="javascript:void(0);" class="btn btn-icon-only p-0 w-auto h-auto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="la la-ellipsis-h"></i></a>
+                                                    <ul class="dropdown-menu">
+
+                                                        <li class="dropdown-item">
+                                                            <a href="#" data-toggle="modal" data-target="#AddsongModel" class="dropdown-link" style="color: #222;" id="Addtoplaylist" onclick="GetPlaylist(@item.ID)"><i class="la la-plus"></i> <span>Add to Playlist</span></a>
+
+                                                        </li>
+                                                        <li class="dropdown-item">
+                                                            <a data-toggle="modal" data-target="#Playlistmodel" class="dropdown-link" id="CreateNewPlaylist" style="color: #222;"><i class="la la-plus"></i> <span>Create Playlist</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    a++;
+
+                                }
+                            }
+
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="Playlistmodel" tabindex="-1" role="dialog" aria-labelledby="listTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body" style="padding:0;">
+
+                <div>
+                    <div class="card-header"><h6 class="card-title mb-0 text-center">Add Playlist</h6></div>
+
+                    <div class="card-body">
+
+
+                        @using (Ajax.BeginForm("AddPlayList", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" }))
+                        {
+                            <div class="form-row form-group">
+                                <label for="listname" class="col-md-4 text-md-right col-form-label">Enter Name</label>
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control" id="listname" name="listname" />
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="NewSongId" value="" name="NewSongId" />
+
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-7">
+                                        <input type="submit" class="btn btn-brand btn-air" id="CreateList" value="CreateList">
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddsongModel" tabindex="-1" role="dialog" aria-labelledby="langTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body" style="padding:0;">
+
+                <div class="card-header"><h6 class="card-title mb-0 text-center">Add To Playlist</h6></div>
+
+                <div class="card-body">
+
+                    @using (Ajax.BeginForm("AddPlayList", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" }))
+                    {
+                        <input type="hidden" id="newsongid" name="newsongid" value="" />
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <select class="list-group row" name="playlistname" id="UIPlaylist">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-7">
+                                    <input type="submit" class="btn btn-brand btn-air" id="Addtolist" value="Add to List">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--- Modal Popup to add new songs-->
+
+<div class="modal fade" id="TrimAudioModel" tabindex="-1" role="dialog" aria-labelledby="langTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body" style="padding:0;">
+
+                <div>
+                    <div class="card-header"><h6 class="card-title mb-0 text-center" id="trimfilename1"></h6></div>
+                    <div class="card-body">
+                        @*@using (Html.BeginForm("UploadAudio", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {*@
+
+
+                        <div class="form-row form-group">
+                            <label for="trimuid" class="col-md-4 text-md-right col-form-label">CartId</label>
+                            <div class="col-md-7">
+                                <label class="col-md-4 text-md-right col-form-label" id="trimuid"></label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-row form-group">
+                            <label for="trimfilename" class="col-md-4 text-md-right col-form-label">Song Name</label>
+                            <div class="col-md-7">
+                                <label class="col-md-10 text-md-right col-form-label" id="trimfilename" name="trimfilename"></label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-row form-group">
+                            <label for="trimduration" class="col-md-4 text-md-right col-form-label">Duration</label>
+                            <div class="col-md-7">
+                                <label class="col-md-4 text-md-right col-form-label" id="trimduration" name="trimduration"></label>
+                                @*<input type="hidden" id="fileduration" name="fileduration" value="">*@
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-row form-group">
+                            <label for="trimduration" class="col-md-4 text-md-right col-form-label">Filepath</label>
+                            <div class="col-md-7">
+                                <label class="col-md-4 text-md-right col-form-label" id="trimfilePath" name="trimfilePath"></label>
+                                @*<input type="hidden" id="fileduration" name="fileduration" value="">*@
+
+                            </div>
+                        </div>
+
+
+                        <div class="container" id="crop">
+                            <h6>Select the part to trim</h6>
+                            <span class="alert alert-danger" role="alert" id="error" style="display:none"></span>
+                            <div id="kr">
+                                <span id="keep-this">keep</span>
+                                <span id="remove-this">remove</span>
+                            </div>
+                            <div id="myslider"></div>
+                            <div id="myslider2"></div>
+                            <!-- Player -->
+                            <div id="ag1" class="audioplayer-tobe" style="width:100%; " data-scrubbg="https://audiotrimmer.com/waves/scrubbg.png" data-scrubprog="https://audiotrimmer.com/waves/scrubprog.png" data-videoTitle="Audio Video" data-type="normal">
+
+                            </div>
+                            <!-- Player -->
+
+                            <div class="row">
+                                <form>
+                                    <div class="col-md-12">
+
+
+                                        <div class="ctrls">
+                                            Start:
+                                            <div class="btn-group" role="group" aria-label="Start second">
+                                                <button id="mn-start" type="button" class="btn btn-success str-but">-</button>
+                                                <input id="begin" value="" class="boxi pull-left" type="text">
+                                                <button id="pl-start" type="button" class="btn btn-success str-but">+</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="ctrls">
+                                            End:
+                                            <div class="btn-group" role="group" aria-label="End second">
+                                                <button id="mn-end" type="button" class="btn btn-success end-but">-</button>
+                                                <input id="end" value="" class="boxi pull-left" type="text">
+                                                <button id="pl-end" type="button" class="btn btn-success end-but">+</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 text-right" style="margin-bottom:30px;">
+                                            <input value="Submit »" class="btn btn-primary pull-right" id="sub_btn" name="sub_btn" type="submit" disabled />
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <span class="clearfix"></span>
+
+                                    <input id="track_url" name="track_url" value="" type="hidden">
+                                    <input id="track_name" name="track_name" value="" type="hidden">
+                                    <input id="folder" name="folder" value="" type="hidden">
+                                    <input id="duration" name="duration" value="" type="hidden">
+                                </form>
+                            </div>
+
+                        </div>
+                        <!-- upload section -->
+                        <div class="container" id="upload">
+
+                            <h6>trim Audio</h6>
+                            <p class="pull-right">Max file size 10MB</p>
+                            <span class="clearfix"></span>
+                            @*<form id="upload-form" method="post" enctype="multipart/form-data">*@
+
+                            <input name="input" id="input" class="file_input" type="file">
+                            <input id="playable" name="playable" value="" type="hidden">
+
+
+                            <input value="Upload »" class="btn btn-primary btn-lg pull-right" id="upload_btn" name="upload_btn" type="submit" disabled />
+
+
+
+                            <div id="myprogress" class="progres" style="display:none;">
+                                <div id="bar1" class="bar"></div>
+                                <div id="percent1" class="percent">0%</div>
+                            </div>
+                            <div class="alert alert-warning" role="alert" id="loading_progress" style="display: none;"></div><br>
+                            <div id="processing">@*<img alt="Processing" src="images/ajax-loader.gif" />*@Processing...</div>
+
+
+                            @*</form>*@
+                            <p class="clearfix"></p>
+
+
+                        </div>
+
+                        <div class="main">
+
+                            <section>
+
+                                <table id="test1"></table>
+
+                            </section>
+
+                        </div>
+
+
+
+
+
+                        @*}*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+
+@section scripts{
+
+    @*<script src="https://audiotrimmer.com/js/jquery-1.12.4.min.js"></script>*@
+
+    <script src="https://audiotrimmer.com/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+
+    <script src="https://audiotrimmer.com/js/jquery.ui.touch-punch.min.js"></script>
+
+    <script src="~/Content/assets/Trim/js/new-min3.js"></script>
+
+    <script src="~/Content/assets/Trim/js/trim-min-1.js"></script>
+
+    <script src="~/Content/assets/Trim/js/jquery.form.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="~/Content/assets/js/scheduler.js"></script>
+
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>*@
+
+
+    <script>
+        function GetTrimAudio(Uid, Title, Duration, FilePath) {
+            debugger;
+            $('#TrimAudioModel').modal('show');
+            $("#trimfilename").text(Title);
+            $("#trimfilename1").text(Title);
+            $("#trimfilePath").text(FilePath);
+            $("#trimuid").text(Uid);
+            $("#trimduration").text(Duration);
+            console.log(Uid + ' ' + Title + ' ' + duration);
+
+
+            /********/
+
+
+            function srcToFile(FilePath, Title, mimeType) {
+                debugger;
+                return (fetch(FilePath)
+                    .then(function (res) { return res.arrayBuffer(); })
+                    .then(function (buf) { return new File([buf], Title, { type: mimeType }); })
+                );
+            }
+
+
+            //usage example: (works in Chrome and Firefox)
+
+            srcToFile(
+                FilePath, Title, 'audio/mpeg'
+            )
+                .then(function (file) {
+                    debugger;
+                    var e = $(file)[0],
+                        //var e= new Audio($(this).attr("url"));
+                        a = e.type,
+                        t = e.name,
+                        o = (t.substring(t.lastIndexOf(".")), document.createElement("audio").canPlayType(a)),
+                        r = window.URL || window.webkitURL;
+                    if (-1 != navigator.userAgent.indexOf("Safari") && -1 == navigator.userAgent.indexOf("Chrome")) var i = "safari";
+                    -1 != $.inArray(a, ["video/3gpp", "audio/amr"]) && (o = "no");
+                    if (("safari" == i && -1 != $.inArray(a, ["audio/x-m4a", "audio/x-m4r"]) && (o = "no"), this.files && this.files[0].size > 104857600))
+                        $("#loading_progress").html("Ooops! Files cannot be bigger than 100MB!"), $("#loading_progress").show(), $("#upload_btn").attr("disabled", !0), $("#myprogress").hide(), (this.value = "");
+                    else if (void 0 !== r)
+                        switch (o) {
+                            case "maybe":
+                            case "probably":
+                            case "yes":
+                                r = window.URL || window.webkitURL;
+                                var n = t.substr(0, t.lastIndexOf(".")) || t,
+                                    s = r.createObjectURL(e);
+                                $(".audio").remove(),
+                                    $("#ag1").attr("data-source", s),
+                                    $("#upload").hide(),
+                                    $("#crop").show(),
+                                    dzsap_init("#ag1", { design_skin: "skin-wave", autoplay: "on" }),
+                                    $("#track_name").val(n),
+                                    $("#crop-button").attr("disabled", !0),
+                                    $("#playable").val("yes"),
+                                    $("#myprogress2").show();
+                                var d = $("#bar2"),
+                                    l = $("#percent2");
+                                $("#upload-form").ajaxSubmit({
+
+                                    url: "up-load.php",
+                                    type: "POST",
+                                    dataType: "json",
+                                    beforeSend: function () {
+                                        d.width("0%"), l.html("0%");
+                                    },
+                                    uploadProgress: function (e, a, t, o) {
+                                        var r = o + "%";
+                                        if ((d.width(r), l.html(r), 100 == o)) {
+                                            var i = window.location.protocol + "//" + window.location.host;
+                                            $("#myprogress2").hide(), $("#trimming_progress").html('<img src="' + i + '/images/ajax-loader.gif"> Processing...');
+                                        } else $("#trimming_progress").html("Uploading...");
+                                    },
+                                    success: function (e) {
+                                        debugger;
+                                        d.width("100%"),
+                                            l.html("100%"),
+                                            $("#folder").val(e.folder),
+                                            $("#crop-button").attr("disabled", !1),
+                                            $("#trimming_progress").html(" "),
+                                            $("#track_url").val(e.url),
+                                            $("#track_ext").children("option:first").val(e.ext).text(e.ext),
+                                            $("#track_ext").attr("disabled", !1),
+                                            $("#duration").val(parseFloat(e.duration).toFixed(2)),
+                                            e.message && ($("#error").html(e.message), $("#error").show(), $("#crop-button").attr("disabled", !0), $("#folder").val(""), $("#track_name").val(""), $("#duration").val(""));
+                                    },
+                                });
+                                break;
+                            default:
+                                $("#loading_progress").hide(), $("#loading_progress").html(""), $("#upload_btn").attr("disabled", !1), $("#myprogress").show(), $(".audio").remove();
+                        }
+                    else $("#loading_progress").hide(), $("#loading_progress").html(""), $("#upload_btn").attr("disabled", !1), $("#myprogress").show(), $(".audio").remove();
+                })
+        }
+    </script>
+
+
+    <script>
+
+
+
+        $(document).ready(function () {
+            debugger;
+
+            var e, a;
+            (e = $("#bar1")),
+                (a = $("#percent1")),
+
+                $("#upload-form").ajaxForm({
+                    
+                    url: "/home/",
+                    type: "POST",
+                    dataType: "json",
+                    beforeSend: function () {
+                        debugger;
+                        e.width("0%"), a.html("0%");
+                    },
+                    uploadProgress: function (t, o, r, i) {
+                        debugger;
+                        var n = i + "%";
+                        e.width(n), a.html(n), 100 == i && (window.location.protocol, window.location.host, $("#myprogress").hide(), $("#processing").show());
+                    },
+                    success: function (t) {
+                        debugger;
+                        e.width("100%"),
+                            a.html("100%"),
+                            $("#ag1").attr("data-source", t.url),
+                            $("#track_url").val(t.url),
+                            $("#track_name").val(t.name),
+                            $("#track_ext").children("option:first").val(t.ext).text(t.ext),
+                            $("#track_ext").attr("disabled", !1),
+                            $("#folder").val(t.folder),
+                            $("#duration").val(parseFloat(t.duration).toFixed(2)),
+                            t.message && ($("#error").html(t.message), $("#error").show()),
+                            $("#upload").hide(),
+                            dzsap_init("#ag1", { design_skin: "skin-wave", autoplay: "on" }),
+                            $("#crop").show();
+                    },
+                }),
+
+                $("#mode").change(function () {
+
+                    $("#mode").prop("checked")
+                        ? ($(".scrub-prog").css("background", "rgba(92, 184, 92, 0.24)"), $("#remove-this").hide(), $("#keep-this").show(), $("#fadein").attr("disabled", !1), $("#fadeout").attr("disabled", !1))
+                        : ($(".scrub-prog").css("background", "rgba(255, 75, 76, 0.24)"),
+                            $("#keep-this").hide(),
+                            $("#remove-this").show(),
+                            $("#fadein").attr("disabled", !0),
+                            $("#fadeout").attr("disabled", !0),
+                            $("#fadein").prop("checked", !1),
+                            $("#fadeout").attr("checked", !1));
+                }),
+
+                //$("#input").change(function () {
+                //    debugger;
+                //    var e = $("input[type=file]")[0].files[0],
+                //        //var e= new Audio($(this).attr("url"));
+
+
+                //        a = e.type,
+                //        t = e.name,
+                //        o = (t.substring(t.lastIndexOf(".")), document.createElement("audio").canPlayType(a)),
+                //        r = window.URL || window.webkitURL;
+                //    if (-1 != navigator.userAgent.indexOf("Safari") && -1 == navigator.userAgent.indexOf("Chrome")) var i = "safari";
+                //    -1 != $.inArray(a, ["video/3gpp", "audio/amr"]) && (o = "no");
+                //    if (("safari" == i && -1 != $.inArray(a, ["audio/x-m4a", "audio/x-m4r"]) && (o = "no"), this.files && this.files[0].size > 104857600))
+                //        $("#loading_progress").html("Ooops! Files cannot be bigger than 100MB!"), $("#loading_progress").show(), $("#upload_btn").attr("disabled", !0), $("#myprogress").hide(), (this.value = "");
+                //    else if (void 0 !== r)
+                //        switch (o) {
+                //            case "maybe":
+                //            case "probably":
+                //            case "yes":
+                //                r = window.URL || window.webkitURL;
+                //                var n = t.substr(0, t.lastIndexOf(".")) || t,
+                //                    s = r.createObjectURL(e);
+                //                $(".audio").remove(),
+                //                    $("#ag1").attr("data-source", s),
+                //                    $("#upload").hide(),
+                //                    $("#crop").show(),
+                //                    dzsap_init("#ag1", { design_skin: "skin-wave", autoplay: "on" }),
+                //                    $("#track_name").val(n),
+                //                    $("#crop-button").attr("disabled", !0),
+                //                    $("#playable").val("yes"),
+                //                    $("#myprogress2").show();
+                //                var d = $("#bar2"),
+                //                    l = $("#percent2");
+                //                $("#upload-form").ajaxSubmit({
+                //                    url: "up-load.php",
+                //                    type: "POST",
+                //                    dataType: "json",
+                //                    beforeSend: function () {
+                //                        d.width("0%"), l.html("0%");
+                //                    },
+                //                    uploadProgress: function (e, a, t, o) {
+                //                        var r = o + "%";
+                //                        if ((d.width(r), l.html(r), 100 == o)) {
+                //                            var i = window.location.protocol + "//" + window.location.host;
+                //                            $("#myprogress2").hide(), $("#trimming_progress").html('<img src="' + i + '/images/ajax-loader.gif"> Processing...');
+                //                        } else $("#trimming_progress").html("Uploading...");
+                //                    },
+                //                    success: function (e) {
+                //                        console.log(e);
+
+                //                        d.width("100%"),
+                //                            l.html("100%"),
+                //                            $("#folder").val(e.folder),
+                //                            $("#crop-button").attr("disabled", !1),
+                //                            $("#trimming_progress").html(" "),
+                //                            $("#track_url").val(e.url),
+                //                            $("#track_ext").children("option:first").val(e.ext).text(e.ext),
+                //                            $("#track_ext").attr("disabled", !1),
+                //                            $("#duration").val(parseFloat(e.duration).toFixed(2)),
+                //                            e.message && ($("#error").html(e.message), $("#error").show(), $("#crop-button").attr("disabled", !0), $("#folder").val(""), $("#track_name").val(""), $("#duration").val(""));
+                //                    },
+                //                });
+                //                break;
+                //            default:
+                //                $("#loading_progress").hide(), $("#loading_progress").html(""), $("#upload_btn").attr("disabled", !1), $("#myprogress").show(), $(".audio").remove();
+                //        }
+                //    else $("#loading_progress").hide(), $("#loading_progress").html(""), $("#upload_btn").attr("disabled", !1), $("#myprogress").show(), $(".audio").remove();
+
+                //}),
+
+                $("#back").click(function () {
+                    debugger;
+                    $("#download").hide(), $("#trimming_progress").html(""), $("#crop").show(), $(window).trigger("resize");
+                });
+            var t = $("#begin"),
+                o = $("#end"),
+                r = 0,
+                i = 0,
+                n = 100,
+                s = 0;
+            requestAnimationFrame(function e(a) {
+                requestAnimationFrame(e);
+                if (a < s) return;
+                s = a + n;
+                if (0 !== r) {
+                    var d = parseFloat($("#begin").val());
+                    (d += r), t.val(d.toFixed(2));
+                }
+                if (0 !== i) {
+                    var l = parseFloat($("#end").val());
+                    (l += i), o.val(l.toFixed(2));
+                }
+            }),
+                $(".str-but").on("mousedown touchstart", function (e) {
+                    !(function (e) {
+                        e.preventDefault(), e.stopPropagation(), parseFloat($("#begin").val()) <= 0 ? "pl-start" == e.target.id && (r += 0.1) : (r = "pl-start" == e.target.id ? 0.1 : -0.1);
+                    })(e);
+                }),
+                $(".str-but").on("mouseup touchend", function (e) {
+                    !(function (e) {
+                        e.preventDefault(), e.stopPropagation(), parseFloat($("#begin").val()) < 0 ? ($("#begin").val(parseFloat(0)), $("#myslider").slider("value", 0)) : $("#myslider").slider("value", $("#begin").val());
+                        ($("audio")[0].currentTime = $("#begin").val()), (r = 0);
+                    })(e);
+                }),
+                $(".str-but").mouseout(function (e) {
+                    !(function (e) {
+                        e.preventDefault(), e.stopPropagation(), $("#myslider").slider("value", $("#begin").val()), (r = 0);
+                    })(e);
+                }),
+                $(".end-but").on("mousedown touchstart", function (e) {
+                    !(function (e) {
+                        e.preventDefault(), e.stopPropagation(), parseFloat($("#end").val()) >= parseFloat($("#duration").val()) ? "mn-end" == e.target.id && (i += -0.1) : (i = "pl-end" == e.target.id ? 0.1 : -0.1);
+                    })(e);
+                }),
+                $(".end-but").on("mouseup touchend", function (e) {
+                    !(function (e) {
+                        e.preventDefault(),
+                            e.stopPropagation(),
+                            parseFloat($("#end").val()) > parseFloat($("#duration").val())
+                                ? ($("#end").val(parseFloat($("#duration").val())), $("#myslider2").slider("value", $("#duration").val()))
+                                : $("#myslider2").slider("value", $("#end").val());
+                        ($("audio")[0].currentTime = parseFloat($("#end").val()) - parseFloat(1.5)), (i = 0);
+                    })(e);
+                }),
+                $(".end-but").mouseout(function (e) {
+                    !(function (e) {
+                        e.preventDefault(), e.stopPropagation(), $("#myslider2").slider("value", $("#end").val()), (i = 0);
+                    })(e);
+                });
+        });
+
+    </script>
+
+
+    <script>
+
+        function GetPlaylist(Songid) {
+            debugger;
+            var playlistname = Songid;
+            console.log(playlistname);
+            $('#newsongid').val(playlistname);
+            $.ajax({
+                url: '/Home/GetPlaylist/',
+                type: "get", //send it through get method
+
+                success: function (response) {
+                    debugger;
+                    console.log(response)
+                    $('#UIPlaylist').html(response);
+                },
+                error: function (xhr) {
+                    debugger;
+                    alert(status);
+                }
+            });
+        }
+
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            debugger;
+            $('input[name="eventType"]').not(':checked').prop("checked", true);
+        });
+    </script>
+
+
+    <script>
+        function OnSuccess(data) {
+            debugger;
+
+            alert("song added to playlist successfully.");
+            $('.modal-backdrop').remove();
+
+            $('#Playlistmodel').hide();
+
+            $('#AddsongModel').hide();
+
+
+        }
+        function OnFailure(data) {
+            debugger;
+            alert("Please try again.");
+            $('.modal-backdrop').remove();
+            $('#Playlistmodel').hide();
+            $('#AddsongModel').hide();
+
+        }
+
+    </script>
+
+
+    <script>
+
+        $("#CreateNewPlaylist").on("click", function () {
+            debugger;
+            var SongId = $("#SongId").val();
+            $("#NewSongId").val(SongId);
+        });
+    </script>
+
+    // script to select time only
+
+    <script>
+        $('#datetimepicker1').datetimepicker({
+            defaultDate: new Date(),
+            format: 'H:mm:ss',
+            sideBySide: true
+        });
+    </script>
+
+    // Scheuler scripts
+
+
+
+    <script>
+        function log(msg) {
+            $('#log').prepend('<p>' + ++log.line + ': ' + msg + '</p>');
+        }
+        log.line = 0;
+        $('#test1').scheduler({
+
+            onRender: function () {
+                log('Init');
+            },
+            onDragStart: function (d) {
+                log('Drag Start');
+            },
+            onDragMove: function (d) {
+                log('Drag Move');
+            },
+            onDragEnd: function (d) {
+                log('Drag End');
+            },
+            onSelect: function (d) {
+                log('Selected');
+            }
+        });
+    </script>
+
+
+
+    <!-- Playlist Script part-->
+    <script>
+        $(document).ready(function () {
+
+            debugger;
+            $.ajax({
+                url: '/Home/SelectPlaylist',
+                type: "get", //send it through get method
+                success: function (response) {
+                    debugger;
+                    console.log(response)
+                    $('#ddlSelectPlaylist').html(response);
+                },
+                error: function (xhr) {
+                    debugger;
+                    alert(status);
+                }
+            });
+
+            //$.get('Home/SelectPlaylist', function (data) {
+            //    debugger;
+            //    console.log(data)
+            //    $.each(data, function (index, value) {
+            //        $('<option>').val(value).text(value).appendTo("#ddlSelectPlaylist");
+            //    })
+            //})
+        })
+    </script>
+
+
+    <script>
+
+        $(document).ready(function ($) {
+            $('.carousel-item-4').slick({
+                dots: false,
+                infinite: true,
+                speed: 500,
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                loop: false,
+                autoplay: false,
+                autoplaySpeed: 2000,
+                arrows: true,
+                prevArrow: '<button class="btn-prev btn btn-pill btn-air btn-default btn-icon-only"><i class="la la-angle-left"></i></button>',
+                nextArrow: '<button class="btn-next btn btn-pill btn-air btn-default btn-icon-only"><i class="la la-angle-right"></i></button>',
+                responsive: [{
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 400,
+                    settings: {
+                        arrows: false,
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }]
+            });
+        });
+
+
+    </script>
+
+
+    <script>
+        $("#ddlSelectPlaylist").change(function () {
+            debugger;
+            var PlaylistId = $(this).val();
+
+            //function GetSongs(PlaylistId) {
+            debugger;
+            $.ajax({
+
+                url: '/Home/ShowPlaylist/' + PlaylistId,
+                type: "get", //send it through get method
+
+                success: function (response) {
+                    debugger;
+                    console.log(response)
+
+                    $('#UlSongs_1').html(response);
+
+                    var playlistname = $('#playlistname').text();
+
+
+
+                    //document.getElementById('currentplaylistname').innerHTML = playlistname;
+
+
+                    //change
+                    $(".song").each(function (index, value) {
+
+                        debugger;
+
+                        var load = new Audio($(this).attr("url"));
+
+                        load.load();
+                        $(".audio-progress").width((load.currentTime / load.duration) * 100 + '%')
+
+                        load.addEventListener('ended', function () {
+                            forward();
+                        });
+
+                        audios.push(load);
+
+                    });
+
+                    //ends change
+
+                },
+                error: function (xhr) {
+                    debugger;
+                    alert(status);
+                }
+            });
+        })
+
+    </script>
+
+    <script>
+        function GetSongsDetails(CartId, playlistname, Playlist_songname, playlistfilesize, playlistfiletype, playlistcommand, playlistcmd_parameter) {
+            debugger;
+            document.getElementById('playlist_songname').innerHTML = Playlist_songname;
+            document.getElementById('playlist_CartId').innerHTML = CartId;
+            document.getElementById('playlist_filesize').innerHTML = playlistfilesize;
+            document.getElementById('playlist_filetype').innerHTML = playlistfiletype;
+
+            document.getElementById('playlist_cmd_Parameter').innerHTML = playlistcmd_parameter;
+            document.getElementById('playlist_command').innerHTML = playlistcommand;
+        }
+    </script>
+
+    <!-- -->
+
+}
+
+

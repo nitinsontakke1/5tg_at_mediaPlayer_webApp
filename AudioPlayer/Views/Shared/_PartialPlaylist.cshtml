@@ -1,0 +1,25 @@
+﻿@model IQueryable<AudioPlayer.EntityModel.Playlist>
+@{
+    Layout = null;
+}
+
+@if (Model.Count() <= 0)
+{
+    <li> No Records Found . Please upload new mp3 file </li>
+}
+else
+{
+    <option selected value="0">Select Playlist...</option>
+
+    foreach (var item in Model)
+    {
+        @*<li class="list-group-item border-0 col-sm-6">
+                <input type="radio" id="radiolist" name="playlistname" checked value="@item.Title">
+                <label class="" for="radiolist">@item.Title</label>
+            </li>*@
+
+        <option onchange="GetSongs(@item.ID)"  id="playlistname" value="@item.ID">@item.Title</option>
+
+        @*<option onchange="GetSongs(@item.ID)" id="playlistname" name="playlistname" value="@item.Title">@item.Title</option>*@
+    }
+}
